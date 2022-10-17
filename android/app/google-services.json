@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "289765226296",
+    "project_id": "communityweb",
+    "storage_bucket": "communityweb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289765226296:android:70b627dda726c1141373cd",
+        "android_client_info": {
+          "package_name": "com.example.community_web_1998"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289765226296-ghkcc8or45onfa70v7g6ffmnvik84ic7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1JiFvNoxeuF7t6U1v2-3IS4e13YaNKEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289765226296-ghkcc8or45onfa70v7g6ffmnvik84ic7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "289765226296-d4ri4lptdk154rn6aguc0fvrnceuhho9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.frontendintelligent.communityWeb1999"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
