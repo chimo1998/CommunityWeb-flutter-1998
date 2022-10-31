@@ -20,6 +20,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 
 // used to pass messages from event handler to the UI
 final _messageStreamController = BehaviorSubject<RemoteMessage>();
+int _id = 0;
 String webUrl = 'https://chargingpile-develope-ts6mdg2sfq-de.a.run.app';
 String uuid = '';
 // Define the background message handler
@@ -53,7 +54,7 @@ Future<void> _showNotification(message) async {
   const NotificationDetails notificationDetails = NotificationDetails(
       android: androidNotificationDetails , iOS: darwinNotificationDetails);
   await flutterLocalNotificationsPlugin.show(
-      message.messageId,
+      _id++,
       message.notification?.title ?? "",
       message.notification?.body ?? "",
       notificationDetails,
