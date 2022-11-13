@@ -44,6 +44,8 @@ dependencies:
   get: ^4.6.5
   device_info: ^2.0.3
   device_info_plus: ^7.0.1
+  flutter_line_sdk:
+  shared_preferences:
 
 dev_dependencies:
   flutter_test:

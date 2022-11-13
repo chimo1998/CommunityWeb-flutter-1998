@@ -16,12 +16,14 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/rxdart.dart';
 // Get device info
 import 'package:device_info_plus/device_info_plus.dart';
-// Signup channel for android notifications
+// line sdk
+import 'package:flutter_line_sdk/flutter_line_sdk.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // used to pass messages from event handler to the UI
 final _messageStreamController = BehaviorSubject<RemoteMessage>();
 int _id = 0;
-String webUrl = 'https://chargingpile-develope-ts6mdg2sfq-de.a.run.app';
+String webUrl = 'https://power.google.net.tw';
 String uuid = '';
 // Define the background message handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -35,24 +37,64 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 
   // if(Platform.isAndroid) _showNotification(message);
-  if (Platform.isAndroid) _showNotification(message);
+  //if (Platform.isAndroid) _showNotification(message);
 }
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+var userProfile;
+String userLineSub = "";
+
+Future<void> _lineLogin() async {
+  // setup line login
+
+  WidgetsFlutterBinding.ensureInitialized();
+  LineSDK.instance
+      .setup("1657447798")
+      .then((value) => print("LineSDK prepared"));
+  try {
+    final result = await LineSDK.instance.login(
+        scopes: ["openid"]); //If the userLineSub ;isn't logged in, it returns a null.
+    if (result != null) {
+      userProfile = result;
+      var idtoken = result.accessToken.idToken;
+      print(idtoken);
+      print(idtoken?["sub"]);
+      userLineSub = idtoken?["sub"];
+      //return userLineSub ;data in Map it contains displayName,pictureUrl,userIdprint(result.userProfile.data);print(result.userProfile.pictureUrl);print(result.userProfile.displayName);
+    } else {
+      print("unable to login");
+    }
+  } catch (e) {
+    // Error handling.print(e.stacktrace);}
+    print(e);
+  }
+}
+
+String fcm_redirect = "";
+void _handleMessage(RemoteMessage message) {
+  print("in handle message ${message.data}");
+  fcm_redirect = message.data["redirect"];
+  print("redirect is $webUrl$fcm_redirect");
+}
+
 Future<void> _showNotification(message) async {
   if (kDebugMode) {
     print("in show notification");
   }
+
   const AndroidNotificationDetails androidNotificationDetails =
-      AndroidNotificationDetails('communityweb1998_channel', "communityweb1998_channel",
-          importance: Importance.max, priority: Priority.max, playSound: true,
+      AndroidNotificationDetails(
+          'communityweb1998_channel', "communityweb1998_channel",
+          importance: Importance.max,
+          priority: Priority.max,
+          playSound: true,
           groupKey: 'com.example.community_web_1998');
   const DarwinNotificationDetails darwinNotificationDetails =
       DarwinNotificationDetails(categoryIdentifier: "community_web_1998");
   const NotificationDetails notificationDetails = NotificationDetails(
-      android: androidNotificationDetails , iOS: darwinNotificationDetails);
+      android: androidNotificationDetails, iOS: darwinNotificationDetails);
   await flutterLocalNotificationsPlugin.show(
       _id++,
       message.notification?.title ?? "",
@@ -120,6 +162,12 @@ Future<void> main() async {
     _showNotification(message);
   });
 
+  RemoteMessage? initialMessage =
+      await FirebaseMessaging.instance.getInitialMessage();
+  if (initialMessage != null) {
+    _handleMessage(initialMessage);
+  }
+  FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   // Set up background message handler
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -134,7 +182,19 @@ Future<void> main() async {
     uuid = androidDeviceInfo.id; // unique ID on Android
   }
 
-  webUrl += '?fcm_device_id=$uuid&fcm_token=${token!}';
+  // Line login
+    // await _lineLogin();
+    final prefs = await SharedPreferences.getInstance();
+  String? lineSub = prefs.getString("line_sub");//storage.getItem('line_sub');
+
+  if (lineSub?.isEmpty ?? true) {
+    await _lineLogin();
+    prefs.setString("line_sub", userLineSub);
+  } else {
+    userLineSub = lineSub!;
+  }
+
+  webUrl += '?from_app=true&fcm_device_id=$uuid&fcm_token=${token!}&line_sub=$userLineSub&$fcm_redirect';
   runApp(const MyApp());
 }
 
@@ -209,7 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       body: SafeArea(
-          child: WebView(
+        child: WebView(
         initialUrl: webUrl,
         javascriptMode: JavascriptMode.unrestricted,
       )),
