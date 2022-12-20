@@ -46,6 +46,7 @@ dependencies:
   device_info_plus: ^7.0.1
   flutter_line_sdk:
   shared_preferences:
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:

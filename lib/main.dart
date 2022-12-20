@@ -19,12 +19,16 @@ import 'package:device_info_plus/device_info_plus.dart';
 // line sdk
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 // used to pass messages from event handler to the UI
 final _messageStreamController = BehaviorSubject<RemoteMessage>();
+final _urlMessageController = BehaviorSubject<RemoteMessage>();
 int _id = 0;
-String webUrl = 'https://power.google.net.tw';
+const String baseUrl = 'https://chargingpile-develope-ts6mdg2sfq-de.a.run.app';
+String webUrl = '';
 String uuid = '';
+bool waitingForDialog = true;
 // Define the background message handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -54,8 +58,9 @@ Future<void> _lineLogin() async {
       .setup("1657447798")
       .then((value) => print("LineSDK prepared"));
   try {
-    final result = await LineSDK.instance.login(
-        scopes: ["openid"]); //If the userLineSub ;isn't logged in, it returns a null.
+    final result = await LineSDK.instance.login(scopes: [
+      "openid"
+    ]); //If the userLineSub ;isn't logged in, it returns a null.
     if (result != null) {
       userProfile = result;
       var idtoken = result.accessToken.idToken;
@@ -76,6 +81,7 @@ String fcm_redirect = "";
 void _handleMessage(RemoteMessage message) {
   print("in handle message ${message.data}");
   fcm_redirect = message.data["redirect"];
+  _urlMessageController.add(message);
   print("redirect is $webUrl$fcm_redirect");
 }
 
@@ -118,7 +124,7 @@ Future<void> main() async {
     initSettings,
   );
 
-  // Request permission
+  // Request permission of notifications
   final messaging = FirebaseMessaging.instance;
   await messaging.setAutoInitEnabled(true);
   final settings = await messaging.requestPermission(
@@ -135,6 +141,23 @@ Future<void> main() async {
     print('Permission granted: ${settings.authorizationStatus}');
   }
 
+  // Request permission of camera and photos
+  await Permission.camera.request();
+  // if (! await Permission.camera.status.isGranted) {
+  //   await Permission.camera.request();
+  // }
+  if (Platform.isAndroid) {
+    await Permission.storage.request();
+  // if (! await Permission.storage.status.isGranted) {
+  //   await Permission.storage.request();
+  // }
+  }
+  else {
+    await Permission.photos.request();
+  // if (! await Permission.photos.status.isGranted) {
+  //   await Permission.photos.request();
+  // }
+  }
   // Register with FCM
   String? token = await messaging.getToken();
 
@@ -165,7 +188,7 @@ Future<void> main() async {
   RemoteMessage? initialMessage =
       await FirebaseMessaging.instance.getInitialMessage();
   if (initialMessage != null) {
-    _handleMessage(initialMessage);
+    fcm_redirect = initialMessage.data["redirect"];
   }
   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   // Set up background message handler
@@ -183,9 +206,9 @@ Future<void> main() async {
   }
 
   // Line login
-    // await _lineLogin();
-    final prefs = await SharedPreferences.getInstance();
-  String? lineSub = prefs.getString("line_sub");//storage.getItem('line_sub');
+  // await _lineLogin();
+  final prefs = await SharedPreferences.getInstance();
+  String? lineSub = prefs.getString("line_sub"); //storage.getItem('line_sub');
 
   if (lineSub?.isEmpty ?? true) {
     await _lineLogin();
@@ -194,7 +217,8 @@ Future<void> main() async {
     userLineSub = lineSub!;
   }
 
-  webUrl += '?from_app=true&fcm_device_id=$uuid&fcm_token=${token!}&line_sub=$userLineSub&$fcm_redirect';
+  webUrl =
+      '$baseUrl?from_app=true&fcm_device_id=$uuid&fcm_token=${token!}&line_sub=$userLineSub&$fcm_redirect';
   runApp(const MyApp());
 }
 
@@ -243,8 +267,21 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String _lastMessage = "";
+  String showUrl = webUrl;
 
+   @override
+   void initState() {
+     super.initState();
+     // Enable virtual display.
+     if (Platform.isAndroid) WebView.platform = AndroidWebView();
+   }
   _MyHomePageState() {
+    _urlMessageController.listen((message) {
+      setState(() {
+        fcm_redirect = message.data["redirect"];
+        showUrl = "$baseUrl?$fcm_redirect";
+      });
+    });
     _messageStreamController.listen((message) {
       setState(() {
         if (message.notification != null) {
@@ -269,8 +306,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       body: SafeArea(
-        child: WebView(
-        initialUrl: webUrl,
+          child: WebView(
+        initialUrl: showUrl,
         javascriptMode: JavascriptMode.unrestricted,
       )),
       // appBar: AppBar(
