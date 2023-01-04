@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:289765226296:android:5db1c25805f868171373cd",
+        "android_client_info": {
+          "package_name": "com.cloudct.community"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289765226296-ghkcc8or45onfa70v7g6ffmnvik84ic7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1JiFvNoxeuF7t6U1v2-3IS4e13YaNKEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289765226296-ghkcc8or45onfa70v7g6ffmnvik84ic7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "289765226296-1a14iphi7alnihigua5332oj4p5cpqp7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.frontendintelligent.communityWeb1998.1234"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:289765226296:android:70b627dda726c1141373cd",
         "android_client_info": {
           "package_name": "com.example.community_web_1998"
@@ -31,10 +67,10 @@
               "client_type": 3
             },
             {
-              "client_id": "289765226296-d4ri4lptdk154rn6aguc0fvrnceuhho9.apps.googleusercontent.com",
+              "client_id": "289765226296-1a14iphi7alnihigua5332oj4p5cpqp7.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "org.frontendintelligent.communityWeb1999"
+                "bundle_id": "com.frontendintelligent.communityWeb1998.1234"
               }
             }
           ]

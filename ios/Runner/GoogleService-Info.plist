@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>289765226296-80s41hfip8m5jfu8tsqi3tjv0pv7nbfd.apps.googleusercontent.com</string>
+	<string>289765226296-1a14iphi7alnihigua5332oj4p5cpqp7.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.289765226296-80s41hfip8m5jfu8tsqi3tjv0pv7nbfd</string>
+	<string>com.googleusercontent.apps.289765226296-1a14iphi7alnihigua5332oj4p5cpqp7</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBNrHtAjYm1wlaUWcy1bIw1mm0LkEqEwck</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,22 +13,22 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.frontendintelligent.communityWeb1998</string>
+	<string>com.frontendintelligent.communityWeb1998.1234</string>
 	<key>PROJECT_ID</key>
 	<string>communityweb</string>
 	<key>STORAGE_BUCKET</key>
 	<string>communityweb.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:289765226296:ios:aa130c0cee1420871373cd</string>
+	<string>1:289765226296:ios:07c7460efdf86b3f1373cd</string>
 </dict>
 </plist>
