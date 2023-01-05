@@ -44,8 +44,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   //if (Platform.isAndroid) _showNotification(message);
 }
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 var userProfile;
 String userLineSub = "";
@@ -54,13 +53,9 @@ Future<void> _lineLogin() async {
   // setup line login
 
   WidgetsFlutterBinding.ensureInitialized();
-  LineSDK.instance
-      .setup("1657447798")
-      .then((value) => print("LineSDK prepared"));
+  LineSDK.instance.setup("1657447798").then((value) => print("LineSDK prepared"));
   try {
-    final result = await LineSDK.instance.login(scopes: [
-      "openid"
-    ]); //If the userLineSub ;isn't logged in, it returns a null.
+    final result = await LineSDK.instance.login(scopes: ["openid"]); //If the userLineSub ;isn't logged in, it returns a null.
     if (result != null) {
       userProfile = result;
       var idtoken = result.accessToken.idToken;
@@ -90,23 +85,11 @@ Future<void> _showNotification(message) async {
     print("in show notification");
   }
 
-  const AndroidNotificationDetails androidNotificationDetails =
-      AndroidNotificationDetails(
-          'communityweb1998_channel', "communityweb1998_channel",
-          importance: Importance.max,
-          priority: Priority.max,
-          playSound: true,
-          groupKey: 'com.example.community_web_1998');
-  const DarwinNotificationDetails darwinNotificationDetails =
-      DarwinNotificationDetails(categoryIdentifier: "community_web_1998");
-  const NotificationDetails notificationDetails = NotificationDetails(
-      android: androidNotificationDetails, iOS: darwinNotificationDetails);
-  await flutterLocalNotificationsPlugin.show(
-      _id++,
-      message.notification?.title ?? "",
-      message.notification?.body ?? "",
-      notificationDetails,
-      payload: "testing");
+  const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails('communityweb1998_channel', "communityweb1998_channel",
+      importance: Importance.max, priority: Priority.max, playSound: true, groupKey: 'com.cloudct.community_web_1998');
+  const DarwinNotificationDetails darwinNotificationDetails = DarwinNotificationDetails(categoryIdentifier: "community_web_1998");
+  const NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails, iOS: darwinNotificationDetails);
+  await flutterLocalNotificationsPlugin.show(_id++, message.notification?.title ?? "", message.notification?.body ?? "", notificationDetails, payload: "testing");
 }
 
 Future<void> main() async {
@@ -115,11 +98,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  const AndroidInitializationSettings android =
-      AndroidInitializationSettings('app_icon');
+  const AndroidInitializationSettings android = AndroidInitializationSettings('app_icon');
   const DarwinInitializationSettings iOS = DarwinInitializationSettings();
-  const InitializationSettings initSettings =
-      InitializationSettings(android: android, iOS: iOS);
+  const InitializationSettings initSettings = InitializationSettings(android: android, iOS: iOS);
   await flutterLocalNotificationsPlugin.initialize(
     initSettings,
   );
@@ -148,15 +129,14 @@ Future<void> main() async {
   // }
   if (Platform.isAndroid) {
     await Permission.storage.request();
-  // if (! await Permission.storage.status.isGranted) {
-  //   await Permission.storage.request();
-  // }
-  }
-  else {
+    // if (! await Permission.storage.status.isGranted) {
+    //   await Permission.storage.request();
+    // }
+  } else {
     await Permission.photos.request();
-  // if (! await Permission.photos.status.isGranted) {
-  //   await Permission.photos.request();
-  // }
+    // if (! await Permission.photos.status.isGranted) {
+    //   await Permission.photos.request();
+    // }
   }
   // Register with FCM
   String? token = await messaging.getToken();
@@ -185,8 +165,7 @@ Future<void> main() async {
     _showNotification(message);
   });
 
-  RemoteMessage? initialMessage =
-      await FirebaseMessaging.instance.getInitialMessage();
+  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
   if (initialMessage != null) {
     fcm_redirect = initialMessage.data["redirect"];
   }
@@ -217,8 +196,7 @@ Future<void> main() async {
     userLineSub = lineSub!;
   }
 
-  webUrl =
-      '$baseUrl?from_app=true&fcm_device_id=$uuid&fcm_token=${token!}&line_sub=$userLineSub&$fcm_redirect';
+  webUrl = '$baseUrl?from_app=true&fcm_device_id=$uuid&fcm_token=${token!}&line_sub=$userLineSub&$fcm_redirect';
   runApp(const MyApp());
 }
 
@@ -230,6 +208,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: '社區網1998',
+      debugShowCheckedModeBanner: false,
       // theme: ThemeData(
       //   // This is the theme of your application.
       //   //
@@ -269,12 +248,13 @@ class _MyHomePageState extends State<MyHomePage> {
   String _lastMessage = "";
   String showUrl = webUrl;
 
-   @override
-   void initState() {
-     super.initState();
-     // Enable virtual display.
-     if (Platform.isAndroid) WebView.platform = AndroidWebView();
-   }
+  @override
+  void initState() {
+    super.initState();
+    // Enable virtual display.
+    if (Platform.isAndroid) WebView.platform = AndroidWebView();
+  }
+
   _MyHomePageState() {
     _urlMessageController.listen((message) {
       setState(() {
